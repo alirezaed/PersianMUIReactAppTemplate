@@ -1,0 +1,20 @@
+image: node:16.13.1
+
+pipelines:
+  branches:
+    master:
+      - step:
+          name: Build and Deploy
+          caches:
+            - node
+          script:
+            - npm install
+            - npm run build
+            - pipe: atlassian/scp-deploy:0.3.3
+              variables:
+                USER: 'Administrator'
+                SERVER: '193.151.129.31'
+                REMOTE_PATH: '/C:/inetpub/wwwroot/zeeroBackoffice'
+                LOCAL_PATH: '$BITBUCKET_CLONE_DIR/build/*'
+          artifacts:
+            - build/**
